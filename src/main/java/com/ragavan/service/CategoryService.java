@@ -5,7 +5,9 @@ import java.util.List;
 import com.ragavan.dao.CategoryDAO;
 import com.ragavan.exception.ServiceException;
 import com.ragavan.exception.ValidationException;
+import com.ragavan.model.Article;
 import com.ragavan.model.Category;
+import com.ragavan.validator.ArticleValidator;
 import com.ragavan.validator.CategoryValidator;
 
 public class CategoryService {
@@ -21,10 +23,10 @@ public class CategoryService {
 		}
 	}
 
-	public int updateService(Category category) throws ServiceException {
+	public int updateService(Category category,String oldName) throws ServiceException {
 		try {
-			categoryValidator.validateUpdate(category);
-			return dao.update(category);
+			categoryValidator.validateUpdate(category,oldName);
+			return dao.update(category,oldName);
 		} catch (ValidationException e) {
 			throw new ServiceException(e.getMessage(), e);
 		}
@@ -41,5 +43,17 @@ public class CategoryService {
 
 	public List<Category> listService() {
 		return dao.list();
+	}
+	
+	public void insertCategory(Article article,Category category) throws ServiceException{
+		ArticleValidator articleValidator=new ArticleValidator();
+		try {
+			categoryValidator.validateSave(category);
+			articleValidator.validateSave(article);
+			dao.insertCategory(article, category);
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage(),e);
+		}
+		
 	}
 }

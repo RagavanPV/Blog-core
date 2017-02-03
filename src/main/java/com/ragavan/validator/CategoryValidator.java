@@ -11,8 +11,9 @@ public class CategoryValidator {
 		isInvalidInteger(category.getUserId().getId(), "Invalid user id");
 	}
 
-	public void validateUpdate(Category category) throws ValidationException {
+	public void validateUpdate(Category category,String name) throws ValidationException {
 		isInvalidString(category.getName(), "Invalid name");
+		isInvalidString(name, "Invalid old name");
 		isInvalidInteger(category.getUserId().getId(), "Invalid user id");
 	}
 

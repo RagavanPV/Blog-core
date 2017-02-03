@@ -15,13 +15,13 @@ public class ArticleDAO {
 
 	public int save(Article article) {
 		String sql = "insert into articles(user_id,title,content)values (?,?,?)";
-		Object[] params = { article.getUserId(), article.getTitle(), article.getContent() };
+		Object[] params = { article.getUserId().getId(), article.getTitle(), article.getContent() };
 		return jdbcTemplate.update(sql, params);
 	}
 
-	public int update(Article article) {
-		String sql = "update articles set title=?,content=? where user_id=?";
-		Object[] params = { article.getTitle(), article.getContent(), article.getUserId() };
+	public int update(Article article, String title) {
+		String sql = "update articles set title=?,content=? where user_id=? and title=?";
+		Object[] params = { article.getTitle(), article.getContent(), article.getUserId().getId(), title };
 		return jdbcTemplate.update(sql, params);
 	}
 
@@ -33,6 +33,12 @@ public class ArticleDAO {
 	public List<Article> list() {
 		final String sql = "select id,user_id,title,content,published_date,modified_date,status from articles";
 		return jdbcTemplate.query(sql, (rs, rowNum) -> fetchData(rs));
+	}
+
+	public List<Article> listByUser(int userId) {
+		final String sql = "select id,user_id,title,content,published_date,modified_date,status from articles where user_id=?";
+		Object[] p = { userId };
+		return jdbcTemplate.query(sql, p, (rs, rowNum) -> fetchData(rs));
 	}
 
 	private Article fetchData(ResultSet rs) throws SQLException {
@@ -53,4 +59,44 @@ public class ArticleDAO {
 		String sql = "select fn_get_article_id(?,?)";
 		return jdbcTemplate.queryForObject(sql, new Object[] { name, userIdVar }, Integer.class);
 	}
+
+	public boolean publishArticle(Article article, User user) {
+		boolean success = true;
+		UserDAO userDao = new UserDAO();
+		int articleId = functionGetArticleId(article.getTitle(), userDao.functionGetUserId(user.getUserName()));
+		if (articleId != 0) {
+			success = false;
+		} else {
+			save(article);
+		}
+		return success;
+	}
+
+	public boolean updateArticle(Article article, User user, String title) {
+		boolean success = true;
+		UserDAO userDao = new UserDAO();
+		int articleId = functionGetArticleId(title, userDao.functionGetUserId(user.getUserName()));
+		if (articleId == 0) {
+			success = false;
+		} else {
+			update(article, title);
+		}
+		return success;
+	}
+
+	public boolean deleteArticle(Article article, User user) {
+		boolean success = true;
+		UserDAO userDao = new UserDAO();
+		CategoryDAO categoryDAO = new CategoryDAO();
+		int articleId = functionGetArticleId(article.getTitle(), userDao.functionGetUserId(user.getUserName()));
+		if (articleId == 0) {
+			success = false;
+		} else {
+			delete(articleId);
+			categoryDAO.delete(articleId);
+		}
+		return success;
+	}
+
+	
 }

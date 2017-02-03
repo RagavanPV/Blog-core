@@ -11,7 +11,7 @@ public class ConnectionUtil {
 	public static BasicDataSource dataSource() {
 		final BasicDataSource ds = new BasicDataSource();
 		ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
-		ds.setUrl("jdbc:mysql://localhost:3306/test");
+		ds.setUrl("jdbc:mysql://localhost:3306/blog");
 		ds.setUsername("root");
 		ds.setPassword("Findme@87");
 		return ds;

@@ -15,24 +15,28 @@ public class ArticleCategoryDAO {
 	JdbcTemplate jdbcTemplate = ConnectionUtil.getJdbcTemplate();
 
 	public int save(ArticleCategory articleCategory) {
-		String sql = "insert into Article_Category(article_id,category_id)values (?,?,?)";
-		Object[] params = { articleCategory.getArticleId(), articleCategory.getCategoryId() };
+		String sql = "insert into Article_Category(article_id,category_id)values (?,?)";
+		Object[] params = { articleCategory.getArticleId().getId(), articleCategory.getCategoryId().getId() };
 		return jdbcTemplate.update(sql, params);
 	}
 
 	public int update(ArticleCategory articleCategory) {
 		String sql = "update Article_Category set article_id=?,category_id=? where id=?";
-		Object[] params = { articleCategory.getArticleId(), articleCategory.getCategoryId() };
+		Object[] params = { articleCategory.getArticleId().getId(), articleCategory.getCategoryId().getId() };
 		return jdbcTemplate.update(sql, params);
 	}
 
 	public int delete(int id) {
-		String sql = "delete from Article_Category where id=?";
+		String sql = "delete from Article_Category where article_id=?";
 		return jdbcTemplate.update(sql, id);
 	}
 
 	public List<ArticleCategory> list() {
 		final String sql = "select id,article_id,category_id from Article_Category";
+		return jdbcTemplate.query(sql, (rs, rowNum) -> fetchData(rs));
+	}
+	public List<ArticleCategory> listByCategory(int id) {
+		final String sql = "select id,article_id,category_id from Article_Category where category_id=?";
 		return jdbcTemplate.query(sql, (rs, rowNum) -> fetchData(rs));
 	}
 
