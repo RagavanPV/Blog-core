@@ -35,9 +35,11 @@ public class ArticleCategoryDAO {
 		final String sql = "select id,article_id,category_id from Article_Category";
 		return jdbcTemplate.query(sql, (rs, rowNum) -> fetchData(rs));
 	}
+
 	public List<ArticleCategory> listByCategory(int id) {
 		final String sql = "select id,article_id,category_id from Article_Category where category_id=?";
-		return jdbcTemplate.query(sql, (rs, rowNum) -> fetchData(rs));
+		Object[] params = { id };
+		return jdbcTemplate.query(sql, params, (rs, rowNum) -> fetchData(rs));
 	}
 
 	private ArticleCategory fetchData(ResultSet rs) throws SQLException {

@@ -21,10 +21,9 @@ public class CategoryDAO {
 		return jdbcTemplate.update(sql, params);
 	}
 
-	public int update(Category category,String oldName) {
-		int id=functionGetCategoryId(oldName, category.getUserId().getId());
+	public int update(Category category) {
 		String sql = "update category set name=? where id=?";
-		Object[] params = { category.getName(), id };
+		Object[] params = { category.getName(), category.getId() };
 		return jdbcTemplate.update(sql, params);
 	}
 
@@ -32,11 +31,30 @@ public class CategoryDAO {
 		String sql = "delete from category where id=?";
 		return jdbcTemplate.update(sql, id);
 	}
-	
 
 	public List<Category> list() {
 		final String sql = "select id,name,user_id from category";
 		return jdbcTemplate.query(sql, (rs, rowNum) -> fetchData(rs));
+	}
+
+	public List<Category> listCategory() {
+		final String sql = "select distinct name from category";
+		return jdbcTemplate.query(sql, (rs, rowNum) -> {
+			final Category category = new Category();
+			category.setName(rs.getString("name"));
+			return category;
+		});
+	}
+
+	public List<Category> listByUserId(int userId) {
+		final String sql = "select id,name from category where user_id=?";
+		Object[] params = { userId };
+		return jdbcTemplate.query(sql, params, (rs, rowNum) -> {
+			final Category category = new Category();
+			category.setId(rs.getInt("id"));
+			category.setName(rs.getString("name"));
+			return category;
+		});
 	}
 
 	private Category fetchData(ResultSet rs) throws SQLException {
@@ -70,9 +88,9 @@ public class CategoryDAO {
 
 	public List<Category> viewCategory(String nam) {
 		String sql = "Select id from category where name=?";
-		Object[] params={nam};
-		return jdbcTemplate.query(sql, params,(rs, rowNum) -> {
-			Category category=new Category();
+		Object[] params = { nam };
+		return jdbcTemplate.query(sql, params, (rs, rowNum) -> {
+			Category category = new Category();
 			category.setId(rs.getInt("id"));
 			return category;
 		});
@@ -84,9 +102,9 @@ public class CategoryDAO {
 		List<Article> listArticle = null;
 		for (final Category a : category) {
 			String sql = "select title,content from articles join article_category on article_id=articles.id where category_id=?";
-			Object[] params={a.getId()};
-			 listArticle= jdbcTemplate.query(sql, params, (rs, rowNum) -> {
-				Article article=new Article();
+			Object[] params = { a.getId() };
+			listArticle = jdbcTemplate.query(sql, params, (rs, rowNum) -> {
+				Article article = new Article();
 				article.setTitle(rs.getString("title"));
 				article.setContent(rs.getString("content"));
 				return article;

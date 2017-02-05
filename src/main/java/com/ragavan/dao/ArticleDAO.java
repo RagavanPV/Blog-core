@@ -2,6 +2,7 @@ package com.ragavan.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,6 +26,20 @@ public class ArticleDAO {
 		return jdbcTemplate.update(sql, params);
 	}
 
+	public int updateById(Article article) {
+		String sql = "update articles set title=?,content=?,modified_date=? where id=?";
+		Object[] params = { article.getTitle(), article.getContent(), LocalDateTime.now(), article.getId() };
+		return jdbcTemplate.update(sql, params);
+	}
+
+	public String getUserIdByArticleId(int articleId) {
+		String sql = "SELECT username FROM users JOIN articles ON users.`ID`=user_id WHERE articles.`ID`=?";
+		Object[] params = { articleId };
+		return jdbcTemplate.queryForObject(sql, params, (rs, rowNum) -> {
+			return rs.getString("username");
+		});
+	}
+
 	public int delete(int id) {
 		String sql = "delete from articles where id=?";
 		return jdbcTemplate.update(sql, id);
@@ -37,6 +52,12 @@ public class ArticleDAO {
 
 	public List<Article> listByUser(int userId) {
 		final String sql = "select id,user_id,title,content,published_date,modified_date,status from articles where user_id=?";
+		Object[] p = { userId };
+		return jdbcTemplate.query(sql, p, (rs, rowNum) -> fetchData(rs));
+	}
+
+	public List<Article> listOtherUser(int userId) {
+		final String sql = "select id,user_id,title,content,published_date,modified_date,status from articles where user_id!=?";
 		Object[] p = { userId };
 		return jdbcTemplate.query(sql, p, (rs, rowNum) -> fetchData(rs));
 	}
@@ -84,11 +105,10 @@ public class ArticleDAO {
 		return success;
 	}
 
-	public boolean deleteArticle(Article article, User user) {
+	public boolean deleteArticle(Article article) {
 		boolean success = true;
-		UserDAO userDao = new UserDAO();
 		CategoryDAO categoryDAO = new CategoryDAO();
-		int articleId = functionGetArticleId(article.getTitle(), userDao.functionGetUserId(user.getUserName()));
+		int articleId = article.getId();
 		if (articleId == 0) {
 			success = false;
 		} else {
@@ -98,5 +118,4 @@ public class ArticleDAO {
 		return success;
 	}
 
-	
 }

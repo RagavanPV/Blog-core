@@ -9,12 +9,13 @@ import com.ragavan.model.Comment;
 
 public class MailUtil {
 	private MailUtil() {
+
 	}
 
 	public static void sendSimpleMail(Comment comments) throws EmailException {
 		Email email = new SimpleEmail();
 		email.setSmtpPort(465);
-		email.setAuthenticator(new DefaultAuthenticator("admin", "admin"));
+		email.setAuthenticator(new DefaultAuthenticator("ragavanpv007@gmail.com", "changedmypassword"));
 		email.setDebug(false);
 		email.setHostName("smtp.gmail.com");
 		email.setSSLOnConnect(true);

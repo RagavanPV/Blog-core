@@ -16,13 +16,14 @@ public class UserDAO {
 
 	public int save(User user) {
 		String sql = "insert into users(username,password,email_id)values (?,?,?)";
-		Object[] params = { user.getUserName(), user.getPassword(), user.getEmailId()};
+		Object[] params = { user.getUserName(), user.getPassword(), user.getEmailId() };
 		return jdbcTemplate.update(sql, params);
 	}
 
 	public int update(User user) {
-		String sql = "update users set username=?,password=?,email_id=? where id=?";
-		Object[] params = { user.getUserName(), user.getPassword(), user.getEmailId(), user.getId() };
+		String sql = "update users set username=?,password=?,email_id=?,role_id=? where id=?";
+		Object[] params = { user.getUserName(), user.getPassword(), user.getEmailId(), user.getRoleId().getId(),
+				user.getId() };
 		return jdbcTemplate.update(sql, params);
 	}
 
@@ -85,4 +86,20 @@ public class UserDAO {
 		String sql = "select fn_is_valid_login(?,?)";
 		return jdbcTemplate.queryForObject(sql, new Object[] { user.getUserName(), user.getPassword() }, Boolean.class);
 	}
+
+	public int functionGetRoleId(String user) throws ValidationException {
+		String sql = "select fn_get_role_id(?)";
+		return jdbcTemplate.queryForObject(sql, new Object[] { user }, Integer.class);
+	}
+
+	public String functionGetUserName(int id) throws ValidationException {
+		String sql = "select fn_get_user_name(?)";
+		return jdbcTemplate.queryForObject(sql, new Object[] { id }, String.class);
+	}
+
+	public String functionGetUserEmail(int id) throws ValidationException {
+		String sql = "select email_id from users where id=?";
+		return jdbcTemplate.queryForObject(sql, new Object[] { id }, String.class);
+	}
+
 }

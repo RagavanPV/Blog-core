@@ -7,7 +7,6 @@ import com.ragavan.exception.ServiceException;
 import com.ragavan.exception.ValidationException;
 import com.ragavan.model.Article;
 import com.ragavan.model.Category;
-import com.ragavan.validator.ArticleValidator;
 import com.ragavan.validator.CategoryValidator;
 
 public class CategoryService {
@@ -23,10 +22,10 @@ public class CategoryService {
 		}
 	}
 
-	public int updateService(Category category,String oldName) throws ServiceException {
+	public int updateService(Category category) throws ServiceException {
 		try {
-			categoryValidator.validateUpdate(category,oldName);
-			return dao.update(category,oldName);
+			categoryValidator.validateUpdate(category);
+			return dao.update(category);
 		} catch (ValidationException e) {
 			throw new ServiceException(e.getMessage(), e);
 		}
@@ -44,16 +43,26 @@ public class CategoryService {
 	public List<Category> listService() {
 		return dao.list();
 	}
-	
-	public void insertCategory(Article article,Category category) throws ServiceException{
-		ArticleValidator articleValidator=new ArticleValidator();
+
+	public List<Category> listCategoryService() {
+		return dao.listCategory();
+	}
+
+	public List<Category> listByUserIdService(int userId) {
+		return dao.listByUserId(userId);
+	}
+
+	public List<Article> viewByCategoryService(String categoryName) {
+		return dao.viewByCategory(categoryName);
+	}
+
+	public void insertCategory(Article article, Category category) throws ServiceException {
 		try {
 			categoryValidator.validateSave(category);
-			articleValidator.validateSave(article);
 			dao.insertCategory(article, category);
 		} catch (ValidationException e) {
-			throw new ServiceException(e.getMessage(),e);
+			throw new ServiceException(e.getMessage(), e);
 		}
-		
+
 	}
 }

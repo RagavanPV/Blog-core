@@ -42,4 +42,8 @@ public class CommentService {
 	public List<Comment> listService() {
 		return dao.list();
 	}
+
+	public List<Comment> listByArticleIdService(int articleId) {
+		return dao.listByArticleId(articleId);
+	}
 }

@@ -20,9 +20,8 @@ public class UserService {
 			return dao.save(user);
 		} catch (ValidationException e) {
 			throw new ServiceException(e.getMessage(), e);
-		}
-		catch (DuplicateKeyException d){
-			throw new ServiceException("Cannot add Duplicate key",d);
+		} catch (DuplicateKeyException d) {
+			throw new ServiceException("Cannot add Duplicate key", d);
 		}
 	}
 
@@ -34,6 +33,7 @@ public class UserService {
 			throw new ServiceException(e.getMessage(), e);
 		}
 	}
+
 	public int updateUsernameService(User user) throws ServiceException {
 		try {
 			userValidator.validateUpdateUsername(user);
@@ -42,6 +42,7 @@ public class UserService {
 			throw new ServiceException(e.getMessage(), e);
 		}
 	}
+
 	public int updatePasswordService(User user) throws ServiceException {
 		try {
 			userValidator.validateUpdatePassword(user);
@@ -63,8 +64,8 @@ public class UserService {
 	public List<User> listService() {
 		return dao.list();
 	}
-	
-	public User listOneService(String name) throws ServiceException{
+
+	public User listOneService(String name) throws ServiceException {
 		try {
 			userValidator.validateListOne(name);
 			return dao.listOne(name);
@@ -72,10 +73,45 @@ public class UserService {
 			throw new ServiceException(e.getMessage(), e);
 		}
 	}
-	public boolean functionLoginService(User user) throws ServiceException{
+
+	public boolean functionLoginService(User user) throws ServiceException {
 		try {
 			userValidator.validateFunctionLogin(user);
 			return dao.functionLogin(user);
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage(), e);
+		}
+	}
+
+	public int functionGetRoleId(String name) throws ServiceException {
+		try {
+			userValidator.validateGetRole(name);
+			return dao.functionGetRoleId(name);
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage(), e);
+		}
+	}
+
+	public int functionGetUserId(String user) throws ServiceException {
+		try {
+			userValidator.validateGetUserId(user);
+			return dao.functionGetUserId(user);
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage(), e);
+		}
+	}
+
+	public String functionGetUserName(int id) throws ServiceException {
+		try {
+			return dao.functionGetUserName(id);
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage(), e);
+		}
+	}
+
+	public String functionGetUserEmail(int id) throws ServiceException {
+		try {
+			return dao.functionGetUserEmail(id);
 		} catch (ValidationException e) {
 			throw new ServiceException(e.getMessage(), e);
 		}

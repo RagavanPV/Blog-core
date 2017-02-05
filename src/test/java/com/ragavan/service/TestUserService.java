@@ -17,10 +17,15 @@ public class TestUserService {
 		// viewUserArticles();
 		// viewAllArticles();
 		// updateArticle();
-		// viewArticleByCategory();
+//		 viewArticleByCategory();
 		// addCategoryForArticle();
 		// updateCategory();
 		// deleteArticle();
+		User user=new User();
+		user.setUserName("Ragavan");
+		user.setPassword("ragava");
+		UserService service=new UserService();
+		System.out.println(service.functionLoginService(user));
 
 	}
 
@@ -37,7 +42,7 @@ public class TestUserService {
 		user.setUserName("Ragavan");
 		article.setUserId(user);
 		try {
-			System.out.println(articleService.deleteArticleService(article, user));
+			System.out.println(articleService.deleteArticleService(article));
 		} catch (ServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -52,7 +57,7 @@ public class TestUserService {
 		user.setId(1);
 		category.setUserId(user);
 		CategoryService categoryService=new CategoryService();
-		System.out.println(categoryService.updateService(category,oldName));
+		System.out.println(categoryService.updateService(category));
 	}
 
 	private static void addCategoryForArticle() {
