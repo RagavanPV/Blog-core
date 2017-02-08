@@ -44,8 +44,11 @@ public class ArticleService {
 	}
 
 	public String getUserIdByArticleId(int articleId) {
-		return dao.getUserIdByArticleId(articleId);
+		return dao.getUserNameByArticleId(articleId);
 
+	}
+	public String getEmailByArticleId(int articleId) {
+		return dao.functionGetEmailIdByArticleId(articleId);
 	}
 
 	public int deleteService(int id) throws ServiceException {

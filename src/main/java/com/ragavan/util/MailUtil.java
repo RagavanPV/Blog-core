@@ -20,9 +20,9 @@ public class MailUtil {
 		email.setHostName("smtp.gmail.com");
 		email.setSSLOnConnect(true);
 		email.setFrom("ragavanpv007@gmail.com");// Admin email
-		email.setSubject("Comment on your article");
-		email.setMsg(comments.getUserId().getUserName() + "" + comments.getCommentText());
-		email.addTo(comments.getArticleId().getUserId().getEmailId());
+		email.setSubject(comments.getUserId().getId() +" commented on your article");
+		email.setMsg(comments.getCommentText());
+		email.addTo(comments.getUserId().getEmailId());
 		email.setStartTLSEnabled(true);
 		email.send();
 

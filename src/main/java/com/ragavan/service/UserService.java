@@ -20,8 +20,8 @@ public class UserService {
 			return dao.save(user);
 		} catch (ValidationException e) {
 			throw new ServiceException(e.getMessage(), e);
-		} catch (DuplicateKeyException d) {
-			throw new ServiceException("Cannot add Duplicate key", d);
+		} catch (DuplicateKeyException e) {
+			throw new ServiceException("Name or email_id already exists", e);
 		}
 	}
 

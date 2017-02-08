@@ -32,7 +32,7 @@ public class ArticleDAO {
 		return jdbcTemplate.update(sql, params);
 	}
 
-	public String getUserIdByArticleId(int articleId) {
+	public String getUserNameByArticleId(int articleId) {
 		String sql = "SELECT username FROM users JOIN articles ON users.`ID`=user_id WHERE articles.`ID`=?";
 		Object[] params = { articleId };
 		return jdbcTemplate.queryForObject(sql, params, (rs, rowNum) -> {
@@ -46,14 +46,38 @@ public class ArticleDAO {
 	}
 
 	public List<Article> list() {
-		final String sql = "select id,user_id,title,content,published_date,modified_date,status from articles";
-		return jdbcTemplate.query(sql, (rs, rowNum) -> fetchData(rs));
+		final String sql = "select articles.id,users.username,title,content,published_date,modified_date,status from articles join users on users.id=articles.user_id";
+		return jdbcTemplate.query(sql, (rs, rowNum) -> {
+			final Article article = new Article();
+			article.setId(rs.getInt("id"));
+			User user = new User();
+			user.setUserName(rs.getString("username"));
+			article.setUserId(user);
+			article.setTitle(rs.getString("title"));
+			article.setContent(rs.getString("content"));
+			article.setPublishedDate(rs.getTimestamp("published_date").toLocalDateTime());
+			article.setModifiedDate(rs.getTimestamp("modified_date").toLocalDateTime());
+			article.setStatus(rs.getInt("status"));
+			return article;
+		});
 	}
 
 	public List<Article> listByUser(int userId) {
-		final String sql = "select id,user_id,title,content,published_date,modified_date,status from articles where user_id=?";
+		final String sql = "select articles.id,users.username,title,content,published_date,modified_date,status from articles join users on users.id=articles.user_id where user_id=?";
 		Object[] p = { userId };
-		return jdbcTemplate.query(sql, p, (rs, rowNum) -> fetchData(rs));
+		return jdbcTemplate.query(sql, p, (rs, rowNum) -> {
+			final Article article = new Article();
+			article.setId(rs.getInt("id"));
+			User user = new User();
+			user.setUserName(rs.getString("username"));
+			article.setUserId(user);
+			article.setTitle(rs.getString("title"));
+			article.setContent(rs.getString("content"));
+			article.setPublishedDate(rs.getTimestamp("published_date").toLocalDateTime());
+			article.setModifiedDate(rs.getTimestamp("modified_date").toLocalDateTime());
+			article.setStatus(rs.getInt("status"));
+			return article;
+		});
 	}
 
 	public List<Article> listOtherUser(int userId) {
@@ -79,6 +103,10 @@ public class ArticleDAO {
 	public int functionGetArticleId(String name, int userIdVar) {
 		String sql = "select fn_get_article_id(?,?)";
 		return jdbcTemplate.queryForObject(sql, new Object[] { name, userIdVar }, Integer.class);
+	}
+	public String functionGetEmailIdByArticleId(int articleIdVar) {
+		String sql = "select fn_get_email_by_article(?)";
+		return jdbcTemplate.queryForObject(sql, new Object[] { articleIdVar }, String.class);
 	}
 
 	public boolean publishArticle(Article article, User user) {

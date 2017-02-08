@@ -45,8 +45,18 @@ public class UserDAO {
 	}
 
 	public List<User> list() {
-		final String sql = "select id,username,password,email_id,role_id from users";
-		return jdbcTemplate.query(sql, (rs, rowNum) -> fetchData(rs));
+		final String sql = "select users.id,username,password,email_id,role_name from users join role on role.id=users.role_id";
+		return jdbcTemplate.query(sql, (rs, rowNum) -> {
+			final User user = new User();
+			user.setId(rs.getInt("id"));
+			user.setUserName(rs.getString("username"));
+			user.setPassword(rs.getString("password"));
+			user.setEmailId(rs.getString("email_id"));
+			Role role = new Role();
+			role.setRoleName(rs.getString("role_name"));
+			user.setRoleId(role);
+			return user;
+		});
 	}
 
 	public User listOne(String name) {

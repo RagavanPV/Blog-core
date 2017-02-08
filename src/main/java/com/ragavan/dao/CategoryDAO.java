@@ -101,12 +101,16 @@ public class CategoryDAO {
 		final List<Category> category = categoryDAO.viewCategory(nam);
 		List<Article> listArticle = null;
 		for (final Category a : category) {
-			String sql = "select title,content from articles join article_category on article_id=articles.id where category_id=?";
+			String sql = "select title,content,username,published_date from articles join article_category on article_id=articles.id join users on users.id=articles.user_id where category_id=?";
 			Object[] params = { a.getId() };
 			listArticle = jdbcTemplate.query(sql, params, (rs, rowNum) -> {
 				Article article = new Article();
 				article.setTitle(rs.getString("title"));
 				article.setContent(rs.getString("content"));
+				article.setPublishedDate(rs.getTimestamp("published_date").toLocalDateTime());
+				User user=new User();
+				user.setUserName(rs.getString("username"));
+				article.setUserId(user);
 				return article;
 			});
 		}
