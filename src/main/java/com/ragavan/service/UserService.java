@@ -42,6 +42,10 @@ public class UserService {
 			throw new ServiceException(e.getMessage(), e);
 		}
 	}
+	public int activateUserService(User user) throws ServiceException {
+		
+			return dao.activateUser(user);
+	}
 
 	public int updatePasswordService(User user) throws ServiceException {
 		try {
@@ -50,6 +54,10 @@ public class UserService {
 		} catch (ValidationException e) {
 			throw new ServiceException(e.getMessage(), e);
 		}
+	}
+	public int updateRoleService(User user) throws ServiceException {
+			return dao.updateRole(user);
+		
 	}
 
 	public int deleteService(int id) throws ServiceException {
@@ -82,6 +90,10 @@ public class UserService {
 			throw new ServiceException(e.getMessage(), e);
 		}
 	}
+	public boolean functionIsValidUserService(String name) throws ServiceException {
+			return dao.functionIsUserActive(name);
+		
+	}
 
 	public int functionGetRoleId(String name) throws ServiceException {
 		try {
@@ -112,6 +124,13 @@ public class UserService {
 	public String functionGetUserEmail(int id) throws ServiceException {
 		try {
 			return dao.functionGetUserEmail(id);
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage(), e);
+		}
+	}
+	public String getHashedPassword(String userName) throws ServiceException {
+		try {
+			return dao.getHashedPassword(userName);
 		} catch (ValidationException e) {
 			throw new ServiceException(e.getMessage(), e);
 		}

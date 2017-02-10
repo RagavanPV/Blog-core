@@ -17,7 +17,7 @@ public class TestUserService {
 		// viewUserArticles();
 		// viewAllArticles();
 		// updateArticle();
-//		 viewArticleByCategory();
+		 viewArticleByCategory();
 		// addCategoryForArticle();
 		// updateCategory();
 		// deleteArticle();
@@ -85,9 +85,9 @@ public class TestUserService {
 
 	private static void viewArticleByCategory() {
 		CategoryDAO categoryDAO = new CategoryDAO();
-		List<Article> list = categoryDAO.viewByCategory("Java");
+		List<Article> list = categoryDAO.viewByCategory("Second");
 		for (Article a : list) {
-			System.out.println(a);
+			System.out.println(a+" "+"test");
 		}
 	}
 

@@ -9,4 +9,6 @@ public class User {
 	private String password;
 	private String emailId;
 	private Role roleId;
+	private String activationCode;
+	private int activation;
 }

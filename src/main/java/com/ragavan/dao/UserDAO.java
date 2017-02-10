@@ -15,8 +15,8 @@ public class UserDAO {
 	JdbcTemplate jdbcTemplate = ConnectionUtil.getJdbcTemplate();
 
 	public int save(User user) {
-		String sql = "insert into users(username,password,email_id)values (?,?,?)";
-		Object[] params = { user.getUserName(), user.getPassword(), user.getEmailId() };
+		String sql = "insert into users(username,password,email_id,activation_code)values (?,?,?,?)";
+		Object[] params = { user.getUserName(), user.getPassword(), user.getEmailId() ,user.getActivationCode()};
 		return jdbcTemplate.update(sql, params);
 	}
 
@@ -32,10 +32,20 @@ public class UserDAO {
 		Object[] params = { user.getUserName(), user.getEmailId() };
 		return jdbcTemplate.update(sql, params);
 	}
+	public int activateUser(User user) {
+		String sql = "update users set activation=1 where userName=? and activation_code=?";
+		Object[] params = { user.getUserName(), user.getActivationCode() };
+		return jdbcTemplate.update(sql, params);
+	}
 
 	public int updatePassword(User user) {
 		String sql = "update users set password=? where email_id=?";
 		Object[] params = { user.getPassword(), user.getEmailId() };
+		return jdbcTemplate.update(sql, params);
+	}
+	public int updateRole(User user) {
+		String sql = "update users set role_id=? where id=?";
+		Object[] params = { user.getRoleId().getId(), user.getId() };
 		return jdbcTemplate.update(sql, params);
 	}
 
@@ -86,6 +96,10 @@ public class UserDAO {
 		String sql = "select fn_is_valid_password(?)";
 		return jdbcTemplate.queryForObject(sql, new Object[] { name }, Boolean.class);
 	}
+	public boolean functionIsUserActive(String name) {
+		String sql = "select fn_is_user_active(?)";
+		return jdbcTemplate.queryForObject(sql, new Object[] { name }, Boolean.class);
+	}
 
 	public int functionGetUserId(String name) {
 		String sql = "select fn_get_user_id(?)";
@@ -110,6 +124,10 @@ public class UserDAO {
 	public String functionGetUserEmail(int id) throws ValidationException {
 		String sql = "select email_id from users where id=?";
 		return jdbcTemplate.queryForObject(sql, new Object[] { id }, String.class);
+	}
+	public String getHashedPassword(String userName) throws ValidationException {
+		String sql = "select password from users where username=?";
+		return jdbcTemplate.queryForObject(sql, new Object[] { userName }, String.class);
 	}
 
 }

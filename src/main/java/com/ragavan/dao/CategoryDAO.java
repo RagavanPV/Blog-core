@@ -2,6 +2,8 @@ package com.ragavan.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -75,6 +77,7 @@ public class CategoryDAO {
 	public void insertCategory(Article article, Category category) {
 		ArticleDAO articleDAO = new ArticleDAO();
 		int articleId = articleDAO.functionGetArticleId(article.getTitle(), article.getUserId().getId());
+		System.out.println(articleId+"title "+article.getTitle()+"user Id "+article.getUserId().getId());
 		save(category);
 		int categoryId = functionGetCategoryId(category.getName(), article.getUserId().getId());
 		ArticleCategory articleCategory = new ArticleCategory();
@@ -86,24 +89,11 @@ public class CategoryDAO {
 		articleCategoryDAO.save(articleCategory);
 	}
 
-	public List<Category> viewCategory(String nam) {
-		String sql = "Select id from category where name=?";
-		Object[] params = { nam };
-		return jdbcTemplate.query(sql, params, (rs, rowNum) -> {
-			Category category = new Category();
-			category.setId(rs.getInt("id"));
-			return category;
-		});
-	}
-
 	public List<Article> viewByCategory(String nam) {
-		CategoryDAO categoryDAO = new CategoryDAO();
-		final List<Category> category = categoryDAO.viewCategory(nam);
 		List<Article> listArticle = null;
-		for (final Category a : category) {
-			String sql = "select title,content,username,published_date from articles join article_category on article_id=articles.id join users on users.id=articles.user_id where category_id=?";
-			Object[] params = { a.getId() };
-			listArticle = jdbcTemplate.query(sql, params, (rs, rowNum) -> {
+			String sql = "SELECT title,content,username,published_date,category.`NAME` FROM articles JOIN users ON users.id=articles.`USER_ID` JOIN category ON category.`USER_ID`=users.id JOIN article_category ON article_category.article_id=articles.`ID` WHERE category.`NAME`=?";
+			Object[] params = { nam };
+			listArticle=jdbcTemplate.query(sql, params, (rs, rowNum) -> {
 				Article article = new Article();
 				article.setTitle(rs.getString("title"));
 				article.setContent(rs.getString("content"));
@@ -113,7 +103,6 @@ public class CategoryDAO {
 				article.setUserId(user);
 				return article;
 			});
-		}
 		return listArticle;
 	}
 
