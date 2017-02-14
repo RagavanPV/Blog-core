@@ -2,10 +2,9 @@ package com.ragavan.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.ragavan.model.Article;
@@ -74,7 +73,7 @@ public class CategoryDAO {
 		return jdbcTemplate.queryForObject(sql, new Object[] { name, userIdVar }, Integer.class);
 	}
 
-	public void insertCategory(Article article, Category category) {
+	public void insertCategory(Article article, Category category) throws DuplicateKeyException {
 		ArticleDAO articleDAO = new ArticleDAO();
 		int articleId = articleDAO.functionGetArticleId(article.getTitle(), article.getUserId().getId());
 		System.out.println(articleId+"title "+article.getTitle()+"user Id "+article.getUserId().getId());

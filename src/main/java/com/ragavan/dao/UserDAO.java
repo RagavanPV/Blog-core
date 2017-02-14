@@ -46,6 +46,7 @@ public class UserDAO {
 	public int updateRole(User user) {
 		String sql = "update users set role_id=? where id=?";
 		Object[] params = { user.getRoleId().getId(), user.getId() };
+		System.out.println(user.getId());
 		return jdbcTemplate.update(sql, params);
 	}
 

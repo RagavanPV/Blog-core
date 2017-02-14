@@ -2,6 +2,8 @@ package com.ragavan.service;
 
 import java.util.List;
 
+import org.springframework.dao.DuplicateKeyException;
+
 import com.ragavan.dao.CategoryDAO;
 import com.ragavan.exception.ServiceException;
 import com.ragavan.exception.ValidationException;
@@ -60,7 +62,7 @@ public class CategoryService {
 		try {
 			categoryValidator.validateSave(category);
 			dao.insertCategory(article, category);
-		} catch (ValidationException e) {
+		} catch (ValidationException | DuplicateKeyException e) {
 			throw new ServiceException(e.getMessage(), e);
 		}
 
